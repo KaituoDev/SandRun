@@ -109,7 +109,6 @@ public class Game extends BukkitRunnable implements Listener {
             for (int i = addition; i > 0; i--) {
                 pasteSchematic("sandrun1body",1000,105 - i * 11,-1000,true);
             }
-            world.getBlockAt(1000,15,-996).setType(Material.AIR);
             Bukkit.getPluginManager().registerEvents(this,plugin);
             Bukkit.getScheduler().runTask(plugin, ()-> {
                 world.getBlockAt(1000,15,-996).setType(Material.AIR);
@@ -120,35 +119,41 @@ public class Game extends BukkitRunnable implements Listener {
                 block.setBlockData(data);
                 for (Player p : players) {
                     p.teleport(new Location(world, 1000.5,106.0,-999.5));
-                    p.sendTitle("§a游戏还有 5 秒开始",null,2,16,2);
+                    p.sendTitle("§a游戏还有 10 秒开始",null,2,16,2);
                     p.playSound(p.getLocation(),Sound.BLOCK_NOTE_BLOCK_HARP,1f,1f);
                     p.getInventory().clear();
                 }
             });
             Bukkit.getScheduler().runTaskLater(plugin, ()-> {
                 for (Player p : players) {
+                    p.sendTitle("§a游戏还有 5 秒开始",null,2,16,2);
+                    p.playSound(p.getLocation(),Sound.BLOCK_NOTE_BLOCK_HARP,1f,1f);
+                }
+            },100);
+            Bukkit.getScheduler().runTaskLater(plugin, ()-> {
+                for (Player p : players) {
                     p.sendTitle("§a游戏还有 4 秒开始",null,2,16,2);
                     p.playSound(p.getLocation(),Sound.BLOCK_NOTE_BLOCK_HARP,1f,1f);
                 }
-            },20);
+            },120);
             Bukkit.getScheduler().runTaskLater(plugin, ()-> {
                 for (Player p : players) {
                     p.sendTitle("§a游戏还有 3 秒开始",null,2,16,2);
                     p.playSound(p.getLocation(),Sound.BLOCK_NOTE_BLOCK_HARP,1f,1f);
                 }
-            },40);
+            },140);
             Bukkit.getScheduler().runTaskLater(plugin, ()-> {
                 for (Player p : players) {
                     p.sendTitle("§a游戏还有 2 秒开始",null,2,16,2);
                     p.playSound(p.getLocation(),Sound.BLOCK_NOTE_BLOCK_HARP,1f,1f);
                 }
-            },60);
+            },160);
             Bukkit.getScheduler().runTaskLater(plugin, ()-> {
                 for (Player p : players) {
                     p.sendTitle("§a游戏还有 1 秒开始",null,2,16,2);
                     p.playSound(p.getLocation(),Sound.BLOCK_NOTE_BLOCK_HARP,1f,1f);
                 }
-            },80);
+            },180);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 for (Player p: players) {
                     p.sendTitle("§e游戏开始！",null,2,16,2);
@@ -157,7 +162,7 @@ public class Game extends BukkitRunnable implements Listener {
                     p.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION,999999,0,false,false));
                 }
 
-            }, 100);
+            }, 200);
             taskIds.add(
                 Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
                     for (Player p : playersAlive) {
@@ -196,7 +201,7 @@ public class Game extends BukkitRunnable implements Listener {
                         }, 8);
                     }
 
-                },100,1));
+                },200,1));
             taskIds.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () ->{
                 Player playerOut = null;
                 for (Player p: playersAlive) {
@@ -213,7 +218,7 @@ public class Game extends BukkitRunnable implements Listener {
                     playersAlive.remove(playerOut);
                 }
 
-            },100,1));
+            },200,1));
             taskIds.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
                 if (playersAlive.size() <= 1) {
                     Player winner = playersAlive.get(0);
@@ -257,7 +262,7 @@ public class Game extends BukkitRunnable implements Listener {
                     }
                 }
 
-            },100,1));
+            },200,1));
         }
     }
     public static void spawnFirework(Location location){
