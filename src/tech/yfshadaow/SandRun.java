@@ -30,7 +30,7 @@ public class SandRun extends JavaPlugin implements Listener {
             return;
         }
         if (pie.getClickedBlock().getLocation().equals(new Location(world,1000,15,-996))) {
-            Game game = new Game(this);
+            SandRunGame game = new SandRunGame(this);
             game.runTask(this);
         }
     }

@@ -41,14 +41,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.*;
 
-public class Game extends BukkitRunnable implements Listener {
+public class SandRunGame extends BukkitRunnable implements Listener {
     World world;
     SandRun plugin;
     List<Player> players;
     List<Player> playersAlive;
     List<Integer> taskIds;
 
-    public Game(SandRun plugin) {
+    public SandRunGame(SandRun plugin) {
         this.plugin = plugin;
         this.players = plugin.players;
         this.playersAlive = new ArrayList<>();
