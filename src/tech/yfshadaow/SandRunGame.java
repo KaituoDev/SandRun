@@ -18,7 +18,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
-import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -278,7 +277,7 @@ public class SandRunGame extends BukkitRunnable implements Listener {
         fw.detonate();
     }
     public long getTime(World world) {
-        return ((CraftWorld)world).getHandle().worldData.getTime();
+        return world.getGameTime();
     }
     private void pasteSchematic(String name, double x, double y ,double z, boolean ignoreAir) {
         File file = new File("plugins/WorldEdit/schematics/" + name + ".schem");
