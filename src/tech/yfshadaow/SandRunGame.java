@@ -143,16 +143,23 @@ public class SandRunGame extends Game implements Listener {
                                 Block[] blocks = getBlockss(p);
                                 Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
                                     for (Block b : blocks) {
-                                /*
-                                if (!b.getType().equals(Material.SANDSTONE) && !b.getType().equals(Material.ANDESITE) && !b.getType().equals(Material.GLOWSTONE)) {
-                                    continue;
-                                }*/
-                                        BlockData data = b.getBlockData();
                                         b.setType(Material.AIR);
+                                        /*
+                                        if (!b.getType().equals(Material.SANDSTONE) && !b.getType().equals(Material.ANDESITE) && !b.getType().equals(Material.GLOWSTONE)) {
+                                            continue;
+                                        }*/
+
+                                        //Removed Falling block animation for better performance
+                                        /*
+
+                                        BlockData data = b.getBlockData();
                                         FallingBlock fb = world.spawnFallingBlock(new Location(world, b.getX() + 0.5, b.getY(), b.getZ() + 0.5), data);
                                         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
                                             fb.remove();
                                         }, 15);
+
+
+                                         */
                                     }
                                 }, 8);
                             }
