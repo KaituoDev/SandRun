@@ -47,7 +47,7 @@ public class SandRunGame extends Game implements Listener {
         this.plugin = plugin;
         players = plugin.players;
         playersAlive = new ArrayList<>();
-        initGame(plugin, "SandRun", 10, new Location(world, 1000, 15, -996), BlockFace.NORTH,
+        initGame(plugin, "SandRun", "§e落沙跑酷", 10, new Location(world, 1000, 15, -996), BlockFace.NORTH,
                 new Location(world, 996, 15, -1000), BlockFace.EAST, new Location(world, 1000, 14, -1000), new BoundingBox(970, 31, -1030, 1030, 129, -970));
     }
 
