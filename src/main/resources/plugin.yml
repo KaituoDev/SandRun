@@ -1,6 +1,6 @@
 api-version: 1.13
 name: SandRun
-main: tech.yfshadaow.SandRun
+main: fun.kaituo.SandRun
 version: 1.0
 author: YFshadaow
 depend: [GameUtils,WorldEdit]

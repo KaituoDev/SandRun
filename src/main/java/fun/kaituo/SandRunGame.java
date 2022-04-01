@@ -1,4 +1,4 @@
-package tech.yfshadaow;
+package fun.kaituo;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -11,6 +11,8 @@ import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
+import fun.kaituo.event.PlayerChangeGameEvent;
+import fun.kaituo.event.PlayerEndGameEvent;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -37,18 +39,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static tech.yfshadaow.GameUtils.world;
+import static fun.kaituo.GameUtils.world;
 
 public class SandRunGame extends Game implements Listener {
     private static final SandRunGame instance = new SandRunGame((SandRun) Bukkit.getPluginManager().getPlugin("SandRun"));
     List<Player> playersAlive;
+    int countDownSeconds = 5;
 
     private SandRunGame(SandRun plugin) {
         this.plugin = plugin;
         players = plugin.players;
         playersAlive = new ArrayList<>();
-        initGame(plugin, "SandRun", "§e落沙跑酷", 10, new Location(world, 1000, 15, -996), BlockFace.NORTH,
-                new Location(world, 996, 15, -1000), BlockFace.EAST, new Location(world, 1000, 14, -1000), new BoundingBox(700, -64, -1300, 1300, 320, -700));
+        initializeGame(plugin, "SandRun", "§e落沙跑酷", new Location(world, 1000, 14, -1000),
+                new BoundingBox(700, -64, -1300, 1300, 320, -700));
+        initializeButtons(new Location(world, 1000, 15, -996), BlockFace.NORTH,
+                new Location(world, 996, 15, -1000), BlockFace.EAST);
     }
 
     public static SandRunGame getInstance() {
@@ -71,9 +76,9 @@ public class SandRunGame extends Game implements Listener {
     }
 
     @Override
-    protected void initGameRunnable() {
+    protected void initializeGameRunnable() {
         gameRunnable = () -> {
-            Collection<Player> startingPlayers = getStartingPlayers();
+            Collection<Player> startingPlayers = getPlayersNearHub(50,50,50);
             players.addAll(startingPlayers);
             playersAlive.addAll(startingPlayers);
             if (players.size() < 2) {
@@ -100,12 +105,15 @@ public class SandRunGame extends Game implements Listener {
                 pasteSchematic("sandrun1body", 1000, 105, -1000, true);
                 pasteSchematic("sandrun1head", 1000, 105, -1000, true);
                 for (int i = addition; i > 0; i--) {
-                    pasteSchematic("sandrun1body", 1000, 105 - i * 11, -1000, true);
+                    int finalI = i;
+                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                        pasteSchematic("sandrun1body", 1000, 105 - finalI * 11, -1000, true);
+                    }, 10L * i);
                 }
                 Bukkit.getPluginManager().registerEvents(this, plugin);
                 removeStartButton();
                 placeSpectateButton();
-                startCountdown();
+                startCountdown(countDownSeconds);
                 Bukkit.getScheduler().runTask(plugin, () -> {
                     for (Player p : players) {
                         p.teleport(new Location(world, 1000.5, 106.0, -999.5));
