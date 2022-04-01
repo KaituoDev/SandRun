@@ -172,7 +172,7 @@ public class SandRunGame extends Game implements Listener {
                                 }, 8);
                             }
 
-                        }, 200, 1));
+                        }, 20L * countDownSeconds, 1));
                 taskIds.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
                     Player playerOut = null;
                     for (Player p : playersAlive) {
@@ -189,7 +189,7 @@ public class SandRunGame extends Game implements Listener {
                         playersAlive.remove(playerOut);
                     }
 
-                }, 200, 1));
+                }, 20L * countDownSeconds, 1));
                 taskIds.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
                     if (playersAlive.size() <= 1) {
                         Player winner = playersAlive.get(0);
@@ -210,14 +210,10 @@ public class SandRunGame extends Game implements Listener {
                         }, 100);
                         players.clear();
                         playersAlive.clear();
-                        List<Integer> taskIdsCopy = new ArrayList<>(taskIds);
-                        taskIds.clear();
-                        for (int i : taskIdsCopy) {
-                            Bukkit.getScheduler().cancelTask(i);
-                        }
+                        cancelGameTasks();
                     }
 
-                }, 200, 1));
+                }, 20L * countDownSeconds, 1));
             }
         };
     }
