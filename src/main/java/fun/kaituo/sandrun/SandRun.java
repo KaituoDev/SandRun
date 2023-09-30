@@ -1,7 +1,8 @@
-package fun.kaituo;
+package fun.kaituo.sandrun;
 
 
-import fun.kaituo.event.PlayerChangeGameEvent;
+import fun.kaituo.gameutils.GameUtils;
+import fun.kaituo.gameutils.event.PlayerChangeGameEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,10 +18,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fun.kaituo.GameUtils.unregisterGame;
-import static fun.kaituo.GameUtils.world;
-
 public class SandRun extends JavaPlugin implements Listener {
+    private GameUtils gameUtils;
     List<Player> players;
 
     public static SandRunGame getGameInstance() {
@@ -35,26 +34,26 @@ public class SandRun extends JavaPlugin implements Listener {
         if (!pie.getClickedBlock().getType().equals(Material.OAK_BUTTON)) {
             return;
         }
-        if (pie.getClickedBlock().getLocation().equals(new Location(world, 1000, 15, -996))) {
+        if (pie.getClickedBlock().getLocation().equals(new Location(gameUtils.getWorld(), 1000, 15, -996))) {
             SandRunGame.getInstance().startGame();
         }
     }
 
     public void onEnable() {
+        gameUtils = (GameUtils) Bukkit.getPluginManager().getPlugin("GameUtils");
         players = new ArrayList<>();
         Bukkit.getPluginManager().registerEvents(this, this);
-        GameUtils.registerGame(getGameInstance());
+        gameUtils.registerGame(getGameInstance());
     }
 
     public void onDisable() {
         Bukkit.getScheduler().cancelTasks(this);
         HandlerList.unregisterAll((Plugin) this);
-        if (players.size() > 0) {
-            for (Player p : players) {
-                p.teleport(new Location(world, 0.5, 89.0, 0.5));
-                Bukkit.getPluginManager().callEvent(new PlayerChangeGameEvent(p, getGameInstance(), null));
+        for (Player p: Bukkit.getOnlinePlayers()) {
+            if (gameUtils.getPlayerGame(p) == getGameInstance()) {
+                Bukkit.dispatchCommand(p, "join Lobby");
             }
         }
-        unregisterGame(getGameInstance());
+        gameUtils.unregisterGame(getGameInstance());
     }
 }

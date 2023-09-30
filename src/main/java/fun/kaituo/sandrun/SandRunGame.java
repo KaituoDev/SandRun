@@ -1,4 +1,4 @@
-package fun.kaituo;
+package fun.kaituo.sandrun;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -11,8 +11,8 @@ import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
-import fun.kaituo.event.PlayerChangeGameEvent;
-import fun.kaituo.event.PlayerEndGameEvent;
+import fun.kaituo.gameutils.Game;
+import fun.kaituo.gameutils.event.PlayerEndGameEvent;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -21,8 +21,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -30,7 +28,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.BoundingBox;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,7 +36,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static fun.kaituo.GameUtils.world;
 
 public class SandRunGame extends Game implements Listener {
     private static final SandRunGame instance = new SandRunGame((SandRun) Bukkit.getPluginManager().getPlugin("SandRun"));
@@ -50,10 +46,10 @@ public class SandRunGame extends Game implements Listener {
         this.plugin = plugin;
         players = plugin.players;
         playersAlive = new ArrayList<>();
-        initializeGame(plugin, "SandRun", "§e落沙跑酷", new Location(world, 1000, 14, -1000),
-                new BoundingBox(700, -64, -1300, 1300, 320, -700));
+        initializeGame(plugin, "SandRun", "§e落沙跑酷", new Location(world, 1000, 14, -1000));
         initializeButtons(new Location(world, 1000, 15, -996), BlockFace.NORTH,
                 new Location(world, 996, 15, -1000), BlockFace.EAST);
+        initializeGameRunnable();
     }
 
     public static SandRunGame getInstance() {
@@ -69,14 +65,8 @@ public class SandRunGame extends Game implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerChangeGame(PlayerChangeGameEvent pcge) {
-        players.remove(pcge.getPlayer());
-        playersAlive.remove(pcge.getPlayer());
-    }
 
-    @Override
-    protected void initializeGameRunnable() {
+    private void initializeGameRunnable() {
         gameRunnable = () -> {
             Collection<Player> startingPlayers = getPlayersNearHub(50,50,50);
             players.addAll(startingPlayers);
@@ -219,13 +209,25 @@ public class SandRunGame extends Game implements Listener {
     }
 
     @Override
-    protected void savePlayerQuitData(Player p) throws IOException {
+    protected void quit(Player p) throws IOException {
         players.remove(p);
         playersAlive.remove(p);
     }
 
     @Override
-    protected void rejoin(Player player) {
+    protected boolean rejoin(Player player) {
+        return false;
+    }
+
+    @Override
+    protected boolean join(Player player) {
+        player.setBedSpawnLocation(hubLocation, true);
+        player.teleport(hubLocation);
+        return true;
+    }
+
+    @Override
+    protected void forceStop() {
 
     }
 
